@@ -1,254 +1,255 @@
-# Web Notepad
+# VibeTalk
 
-A private, browser-based notepad for formatted notes, checklists, sketches, and quick capture. It works without an account: notes save automatically in the current browser. Optional cloud sync lets you share notes across devices using a sync key, with Vercel Functions and Upstash Redis.
+**Chat at the speed of thought — real-time messaging, voice notes, and calls in a responsive web app.**
 
-## Contents
+[![Live demo](https://img.shields.io/badge/demo-live-00A651?style=flat-square)](https://vibetalk.hamzabhulla.workers.dev)
+[![Android](https://img.shields.io/badge/Android-APK-3DDC84?style=flat-square&logo=android&logoColor=white)](https://vibetalk.hamzabhulla.workers.dev/VibeTalk.apk)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)
 
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Requirements](#requirements)
-- [Run Locally](#run-locally)
-- [Deploy to Vercel](#deploy-to-vercel)
-- [Enable Cloud Sync](#enable-cloud-sync)
-- [Use on a Phone or Install as an App](#use-on-a-phone-or-install-as-an-app)
-- [Import, Export, and Backups](#import-export-and-backups)
-- [Keyboard Shortcuts](#keyboard-shortcuts)
-- [API Reference](#api-reference)
-- [Data, Privacy, and Limits](#data-privacy-and-limits)
-- [Troubleshooting](#troubleshooting)
-- [Project Layout](#project-layout)
+[![VibeTalk — Chat at the speed of thought](public/og-image.png)](https://vibetalk.hamzabhulla.workers.dev)
+
+VibeTalk is a full-stack messaging app built with **React, TypeScript, TanStack Start, and Supabase**. It combines direct messages, group rooms, live presence, voice notes, WebRTC voice/video calls, reactions, read receipts, and push notifications in one interface designed for both desktop and mobile.
+
+> **Project status:** Portfolio / active development. Some features depend on your Supabase schema, auth settings, push credentials, and hosting configuration — see [Getting started](#getting-started) and [Security notes](#security-and-privacy-notes) before deploying your own instance.
+
+## Try it
+
+| | |
+| --- | --- |
+| 🌐 **Web app** | [vibetalk.hamzabhulla.workers.dev](https://vibetalk.hamzabhulla.workers.dev) — [sign up](https://vibetalk.hamzabhulla.workers.dev/register) with your email, or [sign in](https://vibetalk.hamzabhulla.workers.dev/login) |
+| 🤖 **Android** | [Download the APK](https://vibetalk.hamzabhulla.workers.dev/VibeTalk.apk) (Android 7.0+, ~11 MB). You may need to allow "install from unknown sources" for your browser once. The SHA-256 checksum is published on the [landing page](https://vibetalk.hamzabhulla.workers.dev/#download). |
+
+<!--
+SCREENSHOTS: add 3-4 real screenshots or a short GIF to docs/screenshots/ and
+uncomment this block.
+
+## Screenshots
+
+| Chat | Voice notes | Rooms |
+| --- | --- | --- |
+| ![Chat](docs/screenshots/chat.png) | ![Voice notes](docs/screenshots/voice.png) | ![Rooms](docs/screenshots/rooms.png) |
+-->
 
 ## Features
 
-### Notes and editing
+**Messaging**
+- Direct conversations and group rooms with live updates and membership controls
+- Emoji reactions, message editing/deletion, copy controls, and read-receipt details
+- Typing status, online/last-seen presence, and unread counts
+- Pin and mute conversations to keep your inbox organised
 
-- Create, edit, search, pin, and delete multiple notes.
-- Automatic local saving, plus an explicit **Save** shortcut.
-- Rich-text formatting: paragraphs, three heading levels, quotes, code blocks, bold, italic, underline, strikethrough, text and highlight colors, lists, alignment, and links.
-- Paste formatted content while preserving its appearance, or switch to plain-text paste. Pasted HTML is sanitized before insertion.
-- Paste images from the clipboard into a note.
-- Insert interactive checkboxes and todo lines. Press Enter in a todo line to add another item.
-- Undo and redo for note text, checkboxes, page layout, shapes, and drawings.
-- Find, replace the current match, or replace all matches.
-- Focus mode, editor font choices, zoom controls, and word/character/read-time counts.
-- Light and dark themes, with the initial theme following the operating-system preference.
+**Voice and calls**
+- Record and play voice notes, with server-side checks for attachment ownership and allowed MIME types
+- Browser-based WebRTC voice/video calls with call invitations, history, and status handling
 
-### Page layout and drawing
+**Privacy and security**
+- Private, invite-controlled rooms and private profile discovery
+- Configurable notification previews
+- Optional end-to-end encrypted **group text** (AES-GCM with per-recipient wrapped message keys) — see [limits](#security-and-privacy-notes)
 
-- Choose free-size pages or A4, A4 landscape, A3, A3 landscape, A5, Letter, or Legal.
-- Add rectangles, rounded boxes, ellipses, triangles, diamonds, stars, lines, and arrows.
-- Draw freehand with a pen; erase freehand strokes; select, move, resize, restyle, and delete shapes.
-- Configure stroke color, fill color, fill mode, and line width.
-- Print notes or use the browser print dialog to save as PDF.
+**Accounts and notifications**
+- Registration, sign-in, password reset/change, profile editing, visibility settings, and account deletion
+- Service-worker push notifications with per-device subscriptions and test notifications
 
-### Files and portability
+**Platform**
+- Responsive desktop and mobile layouts (profile, people, rooms, and calls views)
+- Web app plus an Android APK
+- Separate Cloudflare Workers and Vercel build targets with parity checks to prevent stale or mismatched deployments
 
-- Import `.txt`, `.md`, `.html`, and `.htm` files as notes.
-- Export the current note as `.txt` or `.html`.
-- Download all notes as a JSON backup and restore notes by importing that backup.
-- Copy note content with formatting or as plain text.
+## Tech stack
 
-### Offline and installable app
-
-- A service worker caches the app shell and serves it when the network is unavailable. Cloud sync still requires a network connection.
-- Install the app from supported browsers. On iPhone or iPad, use **Share > Add to Home Screen**.
-- A shortcut for creating a new note is included in the app manifest where supported.
-
-## How It Works
-
-```mermaid
-flowchart LR
-    User[You] --> App[Web Notepad in browser]
-    App --> Local[Browser local storage]
-    App --> SW[Service worker cache]
-    App -. optional sync .-> API[Vercel serverless API]
-    API --> Hash[SHA-256 sync-key namespace]
-    Hash --> Redis[Upstash Redis]
-    Local -. same sync key on another device .-> App2[Web Notepad on another device]
-    App2 -. optional sync .-> API
-```
-
-Local notes and the offline app shell are separate: the service worker caches the application, while note data is saved in the browser's local storage. Sync is an optional path from the app to the API and Redis; the service worker does not cache API requests.
-
-Cloud sync works by exchanging a small note index first, then fetching changed note bodies and uploading locally changed notes. Updates are resolved per note using the latest `updated` timestamp. Deletes are represented by sync tombstones so they can propagate to other devices.
-
-```mermaid
-sequenceDiagram
-    participant A as Browser A
-    participant F as Vercel API
-    participant R as Upstash Redis
-    participant B as Browser B
-    A->>F: GET /api/notes?meta=1 with sync key
-    F->>R: Read metadata in key-specific namespace
-    R-->>F: Note IDs and timestamps
-    F-->>A: Note index
-    A->>F: Fetch changed notes and PUT local changes
-    F->>R: Read or write notes
-    B->>F: Sync using the same key
-    F->>R: Read this key's notes
-    F-->>B: Changed notes and tombstones
-```
-
-## Requirements
-
-- Node.js 18 or later for the local Vercel development server and serverless functions.
-- npm, included with Node.js.
-- A Vercel account to deploy the app and API.
-- An Upstash Redis database connected to the Vercel project to enable cloud sync. This is optional; local note-taking works without it.
-
-The frontend is a static HTML application and has no frontend build step. The only npm dependency is `@upstash/redis`, used by the API functions.
-
-## Run Locally
-
-The recommended local workflow uses Vercel CLI, which serves the static app and runs the functions under `api/`:
-
-1. Install Node.js 18 or newer.
-2. Open a terminal in the project directory.
-3. Install the dependencies and Vercel CLI:
-
-   ```sh
-   npm install
-   npm install --global vercel
-   ```
-
-4. Start the local development server:
-
-   ```sh
-   vercel dev
-   ```
-
-5. Open the local URL printed by Vercel, typically `http://localhost:3000`.
-
-The editor and local browser storage work without Redis. To test cloud sync locally, connect a Redis database to the Vercel project and pull its environment variables into the local project using the Vercel CLI, or create a local `.env` file with `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. Do not commit `.env` files or disclose these credentials.
-
-Opening `public/index.html` directly can be useful for a quick UI check, but it does not run `/api/*`, and service-worker installation requires a secure context (normally HTTPS or localhost). Use `vercel dev` to test the deployed app structure.
-
-## Deploy to Vercel
-
-1. Create a Git repository and push this project to GitHub, GitLab, or another Git provider supported by Vercel.
-2. In Vercel, select **Add New > Project**, import the repository, and choose **Other** as the framework preset.
-3. Leave the build command empty. The site is static and the `api/` directory contains Vercel Functions.
-4. Deploy the project.
-5. Open the deployment URL and confirm the editor loads. Without Redis, it remains usable with browser-local storage.
-6. To enable sync, add an Upstash Redis integration from the Vercel project's **Storage** or Marketplace section and connect it to this project.
-7. Confirm the environment variables `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are available to the deployment. Redeploy after connecting storage or changing environment variables.
-8. Check `https://YOUR-DOMAIN/api/health`. A healthy configured response resembles:
-
-   ```json
-   {"api":"up","storage":"configured","redis":"ok"}
-   ```
-
-Use the production domain for phone sync if Vercel Deployment Protection blocks preview deployments. Alternatively, adjust the deployment protection settings for the deployment you intend to use.
-
-## Enable Cloud Sync
-
-1. Deploy the app and connect Upstash Redis as described above.
-2. In the app, select **Sync: off** to open Cloud sync.
-3. Select **Generate** for a random key, or enter your own key containing 16 to 128 letters, numbers, underscores, or hyphens. Keys are normalized to lowercase and whitespace is removed.
-4. Select **Save & sync**. The app downloads remote notes and uploads local changes.
-5. On another device, open the same site and provide the same key, or use **Share sync link** on the first device. Check that the displayed **Key ID** matches on both devices.
-6. Use **Sync now** to request a sync immediately. The app also syncs periodically while visible, on return to the page, and when the browser comes online.
-
-The sync key is a bearer secret: anyone who obtains it can access the notes in its namespace. Store it safely. A share link includes the key in its URL fragment; sharing that URL grants access to those notes.
-
-To stop syncing on a device, open Cloud sync and select **Turn off**. Existing local notes remain in that browser.
-
-## Use on a Phone or Install as an App
-
-1. Open the production HTTPS domain on the phone.
-2. To bring over synced notes, either enter the same sync key in Cloud sync or select **Share sync link** on the computer and open the link on the phone.
-3. Confirm the Key ID matches the other device.
-4. Install the app:
-   - Chrome, Edge, and supported Android browsers may show an install prompt or an install icon in the address bar.
-   - On iPhone or iPad, open the browser's **Share** menu and select **Add to Home Screen**.
-
-The service worker makes the app shell available offline after it has been loaded online. Notes are available offline only on devices where those notes have already been stored locally. Sync operations need a connection.
-
-## Import, Export, and Backups
-
-- **Import a text or Markdown file:** select **Import** and choose a `.txt` or `.md` file. Its filename becomes the note title.
-- **Import HTML:** choose `.html` or `.htm`; unsafe elements and event attributes are removed before content is added.
-- **Restore a backup:** choose a JSON backup created by **Backup all**. Imported notes are added as new notes rather than replacing existing ones.
-- **Export one note:** open **Export** and choose **Download .txt**, **Download .html**, **Print**, or **Save as PDF**. PDF output is created by the browser's print dialog.
-- **Back up regularly:** select **Backup all** and store the downloaded JSON file somewhere separate from this browser. Browser storage can be cleared by the user, browser settings, or device cleanup tools.
-
-## Keyboard Shortcuts
-
-| Shortcut | Action |
+| Area | Technologies |
 | --- | --- |
-| `Ctrl/Cmd + S` | Save immediately to browser storage and request sync |
-| `Alt + N` | Create a new note |
-| `Ctrl/Cmd + H` | Open find and replace |
-| `Ctrl/Cmd + Z` | Undo |
-| `Ctrl/Cmd + Y` or `Ctrl/Cmd + Shift + Z` | Redo |
-| `Ctrl/Cmd + B` | Bold selected text |
-| `Ctrl/Cmd + I` | Italicize selected text |
-| `Ctrl/Cmd + U` | Underline selected text |
-| `Ctrl/Cmd + P` | Open the browser print dialog |
-| `Ctrl/Cmd + +` or `Ctrl/Cmd + =` | Zoom in while the editor is focused |
-| `Ctrl/Cmd + -` | Zoom out while the editor is focused |
-| `Ctrl/Cmd + 0` | Reset zoom while the editor is focused |
-| `Esc` | Close menus/find and replace and leave focus mode |
+| UI | React 19, TypeScript, Tailwind CSS 4, Radix UI, Lucide |
+| Framework | TanStack Start, TanStack Router, TanStack React Query, Vite |
+| Backend and data | Supabase Auth, PostgreSQL, Row Level Security, Realtime, Storage |
+| Calls | WebRTC with STUN/TURN configuration |
+| Notifications | Service Worker, Web Push, VAPID |
+| Forms and validation | Zod, React Hook Form |
+| Hosting | Cloudflare Workers (live demo), Vercel (supported target) |
+| Code quality | TypeScript checks, ESLint, Prettier, build/config guard scripts |
 
-On macOS, use `Cmd` where the table says `Ctrl/Cmd`. Browser and operating-system shortcut behavior may vary.
+## Architecture
 
-## API Reference
+```mermaid
+flowchart TD
+    A[Responsive React UI] --> B[TanStack Start server functions]
+    A <--> C[Supabase client]
+    B --> D[Supabase Auth]
+    B --> E[PostgreSQL + Row Level Security]
+    B --> F[Supabase Storage]
+    A <--> G[Supabase Realtime]
+    A <--> H[WebRTC peer connection]
+    B --> I[Web Push / VAPID]
+    J[Service Worker] --> K[Browser notifications]
+    I --> J
+```
 
-The API is implemented as Vercel serverless functions in `api/`.
+- **Client:** React routes and components handle the responsive UI, realtime subscriptions, media capture, and browser APIs.
+- **Server:** TanStack Start server functions run authenticated operations and keep privileged service-role access server-side.
+- **Data:** Supabase provides auth, relational data, storage, and realtime events. Row Level Security is part of the authorization boundary.
+- **Calls:** WebRTC handles the peer connection; signaling and call state go through the app and Supabase-backed functions/channels.
+- **Notifications:** The service worker handles background notifications; server-side Web Push uses VAPID credentials.
 
-| Method and path | Purpose | Authentication |
-| --- | --- | --- |
-| `GET /api/health` | Reports API status, whether storage environment variables exist, and whether Redis responds to ping. | None |
-| `GET /api/notes?meta=1` | Lists note IDs, titles, timestamps, deletion state, and pin state without note bodies. | `x-sync-key` header |
-| `GET /api/notes?id=NOTE_ID` | Fetches one note. Without `id`, fetches the note collection. | `x-sync-key` header |
-| `PUT /api/notes` | Creates or updates one note using a JSON `{ "note": { ... } }` request body. | `x-sync-key` header |
+## Getting started
 
-The sync key must be 16 to 128 characters. The server hashes it with SHA-256 to derive a Redis namespace; the raw key is not stored by the API. Note content is not end-to-end encrypted by this application. See [Data, Privacy, and Limits](#data-privacy-and-limits).
+### Prerequisites
 
-## Data, Privacy, and Limits
+- Node.js 22 (or a compatible supported release) and npm
+- A Supabase project with the required schema, policies, storage, and auth settings
+- *Optional:* VAPID keys for background push notifications
+- *Optional:* a restricted, rate-limited TURN credential for calls across restrictive networks
 
-- **Local-only mode:** notes are stored in the browser's `localStorage` for that site and browser profile. They are not automatically available in another browser or device.
-- **Synced mode:** note data, including formatted HTML and drawing metadata, is stored in the connected Upstash Redis database. The server uses a SHA-256 hash of the sync key as the namespace identifier; this is not content encryption.
-- **Access control:** possession of the sync key grants access to that key's notes. Choose a hard-to-guess key and avoid sharing it publicly.
-- **Conflict handling:** sync uses timestamps and applies the latest edit per note. This is not collaborative real-time editing; simultaneous changes to the same note may result in one version winning.
-- **Deletion:** synced deletes are retained as tombstones to propagate deletion to other devices. Turning sync off does not delete local or remote notes.
-- **Limits enforced by the API:** up to 500 note records per sync key; note HTML is limited to 3,000,000 characters and serialized extra metadata to 500,000 characters. Large pasted images can exceed sync limits because images may be embedded in note HTML.
-- **Backups:** the JSON backup includes live notes. Keep an independent backup if the notes matter; Redis sync is not a substitute for an export.
-- **Transport:** use HTTPS for deployed sites, particularly when entering or sharing a sync key.
+### 1. Clone and install
 
-## Troubleshooting
+```bash
+git clone https://github.com/hamzabhulla/VibeTalk.git
+cd VibeTalk
+npm ci
+```
 
-### Sync is unavailable or says it cannot reach the server
+### 2. Configure environment variables
 
-1. Open **Cloud sync > Test connection**. The result distinguishes connectivity, API deployment, Redis configuration, and deployment protection problems.
-2. Visit `https://YOUR-DOMAIN/api/health`. Check for `"storage":"configured"` and `"redis":"ok"`.
-3. In Vercel, confirm the Upstash integration is connected and that `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are set for the deployment environment. Redeploy after making changes.
-4. Confirm the deployed project includes the `api/` directory and open the production URL if a preview deployment is protected.
-5. Check the Key ID on each device. The IDs should match when the same sync key is in use.
+```bash
+cp .env.example .env
+```
 
-### The phone says Vercel is blocking the URL
+| Variable | Purpose |
+| --- | --- |
+| `SUPABASE_URL` | Supabase project URL used by server-side code |
+| `SUPABASE_PUBLISHABLE_KEY` | Publishable key used by the server-side Supabase client |
+| `VITE_SUPABASE_URL` | Supabase URL compiled into the browser bundle; must match `SUPABASE_URL` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Browser-facing publishable key |
+| `VITE_SUPABASE_PROJECT_ID` | Project identifier used by client configuration |
+| `VAPID_PUBLIC_KEY` | Public VAPID key for Web Push |
+| `VITE_VAPID_PUBLIC_KEY` | Build-time VAPID public key; keep it paired with the server key |
+| `VAPID_SUBJECT` | *Optional* VAPID contact URL |
+| `VITE_TURN_URLS` | *Optional* STUN/TURN server URL(s) for WebRTC |
+| `VITE_TURN_USERNAME` | *Optional* TURN username |
+| `VITE_TURN_CREDENTIAL` | *Optional* TURN credential — anything prefixed `VITE_` is exposed in the client bundle |
 
-Open the production domain instead of a protected preview URL, or change Deployment Protection for that deployment.
+> **Never** put privileged credentials in `.env.example`, source control, screenshots, issue reports, or `VITE_` variables. `SUPABASE_SERVICE_ROLE_KEY` and `VAPID_PRIVATE_KEY` belong in your hosting provider's secret store only.
 
-### A note will not sync
+The server-side and browser-side Supabase values must point to the **same project** — a mismatch causes auth failures that look like session bugs.
 
-The API rejects notes above the limits listed above and permits at most 500 note records per key. Remove large embedded images or reduce content, then sync again. The app's **Test connection** action can verify API and Redis availability.
+### 3. Set up Supabase
 
-### Notes seem missing
+1. Create or select a Supabase project.
+2. Apply the SQL in `supabase/migrations/` in order, using your normal Supabase migration workflow.
+3. Review the extra `supabase/vibetalk-*.sql` files before applying them. They include audit/fix scripts and consolidated snapshots — **do not blindly run every SQL file**, as some overlap.
+4. Confirm Row Level Security protects profiles, rooms, memberships, messages, reactions, calls, and other user-scoped data.
+5. Set your Supabase Auth site and redirect URLs for local and production domains.
+6. Add the required server secrets to your host before enabling push or any privileged database access.
 
-Check that the same browser profile is being used for local-only notes, or that the same Key ID is active on every synced device. Import the most recent JSON backup if needed. Do not clear site data until you have checked for a backup.
+[`AGENTS.md`](AGENTS.md) documents additional deployment and Supabase dashboard assumptions — read it before changing security-sensitive configuration.
 
-## Project Layout
+### 4. Run locally
+
+```bash
+npm run dev
+```
+
+For a production-style build and preview:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server |
+| `npm run typecheck` | Run the TypeScript compiler without emitting files |
+| `npm run lint` | Lint source, scripts, Vite configs, and the service worker |
+| `npm run build` | Type-check, verify config/header parity, and build the Cloudflare target |
+| `npm run build:vercel` | Clean stale output, run guards, and build the Vercel target |
+| `npm run deploy:build` | Run both production builds and their guard checks |
+| `npm run build:dev` | Development build into a separate, non-deployable output directory |
+| `npm run check:vite-parity` | Check Cloudflare and Vercel Vite configs stay aligned |
+| `npm run check:security-headers-parity` | Check security-header parity across hosts |
+| `npm run format` | Format with Prettier |
+
+## Deployment
+
+VibeTalk ships build configuration for **Cloudflare Workers** (used by the live demo) and **Vercel**. Guard scripts compare configuration and security headers and help prevent stale output from being deployed.
+
+Before deploying:
+
+1. Set all environment variables and server-side secrets on the target host.
+2. Make sure Supabase Auth redirect URLs and the browser/server Supabase configuration match the deployment.
+3. Follow the build/deploy sequence in [`AGENTS.md`](AGENTS.md) for your host.
+4. Verify the service worker, auth, realtime messaging, calls, and push notifications after deploying.
+5. Never deploy a development build or a stale output directory.
+
+## Security and privacy notes
+
+- Authorization is enforced on the server and in Supabase Row Level Security — client-side checks are not a security boundary.
+- Service-role credentials and VAPID private keys stay server-side. `VITE_*` variables are visible in the compiled bundle.
+- Optional E2EE applies to **text messages in newly created group rooms where E2EE is enabled**. Attachments and voice notes are **not** covered by that layer, so the app as a whole should not be described as end-to-end encrypted.
+- WebRTC call security and text-message E2EE are separate concerns; review the call/signaling threat model before making security claims about calls.
+- Review the SQL migration history and the threat-model notes in `AGENTS.md` before production use.
+
+This README describes the implementation in the repository. It is not a security audit or a guarantee that any deployment is correctly configured.
+
+## Project structure
 
 ```text
 .
-|-- api/
-|   |-- health.js       # API and Redis health check
-|   `-- notes.js        # Note list, fetch, and upsert endpoints
-|-- public/
-|   |-- index.html      # Complete single-page notepad application
-|   |-- manifest.json   # Installable web app metadata
-|   `-- sw.js            # Offline app-shell caching
-|-- package.json        # Node engine requirement and Upstash dependency
-`-- README.md
+├── public/                   # Static assets, service worker, Android APK, social preview
+├── scripts/                  # Build, deployment, and parity guard scripts
+├── src/
+│   ├── components/           # Chat UI, call overlay, voice notes, profile and mobile UI
+│   ├── hooks/                # Shared React hooks
+│   ├── integrations/supabase/# Supabase clients, auth middleware, generated types
+│   ├── lib/                  # Server functions, calls, E2EE, push, uploads, security helpers
+│   ├── routes/               # Landing, auth, rooms, people, calls, and profile routes
+│   ├── server.ts             # Server entry and error handling
+│   └── router.tsx            # Router setup
+├── supabase/
+│   ├── migrations/           # Ordered database migrations
+│   └── vibetalk-*.sql        # Additional SQL scripts and consolidated snapshots
+├── AGENTS.md                 # Architecture, security, and deployment rules
+├── .env.example              # Environment template (no secret values)
+├── vite.config.ts            # Cloudflare-targeted Vite config
+└── vite.config.vercel.ts     # Vercel-targeted Vite config
 ```
+
+## Known limitations
+
+- Push notifications need correct VAPID configuration, a working service worker, browser permission, and host-side secrets.
+- Calls behind restrictive NATs or firewalls may need valid STUN/TURN configuration.
+- TURN settings are currently client-provided; don't embed privileged or long-lived TURN credentials in the client bundle.
+- E2EE covers group text only (see above).
+- There is no automated test suite yet — type-checking, linting, and build guard scripts are available.
+
+## Roadmap
+
+- Automated tests for authorization boundaries, messaging, E2EE envelope handling, push delivery, and call lifecycle edge cases
+- Browser end-to-end tests for sign-up, direct/group messaging, attachments, notifications, and calling
+- Ephemeral, server-minted TURN credentials
+- Key lifecycle and multi-device recovery for E2EE
+- A repeatable clean-environment database bootstrap and deployment verification checklist
+
+## Contributing
+
+Issues and pull requests are welcome. For a change:
+
+1. Open an issue describing the problem or proposed behavior.
+2. Keep authorization checks on the server and in database policies.
+3. Run `npm run typecheck`, `npm run lint`, and the relevant build checks.
+4. Include tests or reproducible verification steps for behavior changes.
+5. Don't commit `.env`, secrets, local Wrangler state, generated output, or personal data.
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+## Author
+
+Made by **Hamza Bhulla** — [@hamzabhulla](https://github.com/hamzabhulla)
+
+Built with React, TypeScript, TanStack, Supabase, Tailwind CSS, Radix UI, and the wider open-source ecosystem.
