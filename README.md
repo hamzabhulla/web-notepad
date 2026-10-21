@@ -23,12 +23,7 @@
 
 </div>
 
-<!--
-SCREENSHOT: save a clean 1600x1000 screenshot (light theme, one sample note with a
-checklist and a shape) as docs/screenshot.png, then replace this comment with:
-
-<p align="center"><img src="docs/screenshot.png" alt="Web Notepad editor" width="820"></p>
--->
+<p align="center"><img src="docs/screenshot.png" alt="Web Notepad editing a weekend plan note with a checklist and an arrow shape" width="820"></p>
 
 ## Overview
 
