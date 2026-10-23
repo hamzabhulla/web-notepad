@@ -2,7 +2,11 @@
   "name": "web-notepad",
   "version": "1.0.0",
   "private": true,
-  "description": "Rich-text web notepad with optional cloud sync (Vercel + Upstash Redis)",
-  "engines": { "node": ">=18" },
-  "dependencies": { "@upstash/redis": "^1.34.0" }
+  "description": "Easy Notepad: local-first rich-text notes with optional cloud sync (Vercel + Upstash Redis)",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.34.0"
+  }
 }
