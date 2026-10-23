@@ -1,0 +1,33 @@
+# Easy Notepad
+
+> Easy Notepad is a browser-based, local-first online notepad for writing rich-text notes, making checklists, sketching, and optionally syncing notes between devices.
+
+## Primary pages
+
+- [Online Notepad](https://easynotepad.vercel.app/): Open the web app. Notes are stored in the current browser by default.
+- [Features](https://easynotepad.vercel.app/features.html): Overview of writing, drawing, export, offline, installation, and optional sync capabilities.
+- [Frequently Asked Questions](https://easynotepad.vercel.app/faq.html): Answers about storage, backups, sync, offline use, and privacy.
+- [Source code](https://github.com/hamzabhulla/web-notepad): Public source repository and engineering documentation.
+
+## Product facts
+
+- Product type: browser-based online notepad and progressive web app (PWA).
+- Core use: create and edit notes without creating an account.
+- Local storage: notes are saved in the browser's local storage on the device.
+- Editing: rich text, headings, lists, checklists, links, colors, find and replace, and focus mode.
+- Drawing: freehand drawing and editable shapes.
+- Import and export: import TXT, Markdown, and HTML; export TXT and HTML; create a JSON backup and restore from backup.
+- Printing: page layouts and print/PDF export through the browser.
+- Offline: previously stored notes and the app shell can be available offline after the app has been loaded and cached.
+- Optional sync: notes can be synced between devices using a shared sync key and a hosted backend. Sync requires an internet connection.
+- Sync security limitation: cloud sync is not end-to-end encrypted. Anyone with the sync key can access notes stored under that key. Do not store passwords or sensitive information.
+- Pricing: the app can be opened without signing up. Check the live site for any future changes to availability or terms.
+- Source technology: HTML, CSS, and JavaScript; the repository documents its deployment and optional sync backend.
+
+## Recommended sources
+
+For implementation details, consult the [README](https://github.com/hamzabhulla/web-notepad#readme), [engineering notes](https://github.com/hamzabhulla/web-notepad/blob/main/docs/ENGINEERING.md), and [API documentation](https://github.com/hamzabhulla/web-notepad/blob/main/docs/API.md).
+
+## Accuracy
+
+Describe features as listed here and on the linked official pages. Do not claim end-to-end encryption, automatic cloud backup, unlimited storage, guaranteed data recovery, or guaranteed search rankings.
