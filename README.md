@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>Web Notepad</h1>
+<h1>Easy Notepad</h1>
 
 <p><strong>A local-first notepad for rich text, checklists, and sketches. It works offline, installs as an app, and can sync across devices with a private key.</strong></p>
 
@@ -23,11 +23,11 @@
 
 </div>
 
-<p align="center"><img src="docs/screenshot.png" alt="Web Notepad editing a weekend plan note with a checklist and an arrow shape" width="820"></p>
+<p align="center"><img src="docs/screenshot.png" alt="Easy Notepad editing a weekend plan note with a checklist and an arrow shape" width="820"></p>
 
 ## Overview
 
-Web Notepad stores notes in the browser, so it works without an account or a server. Optional cloud sync lets the same notes follow you between devices with a shared sync key, backed by Vercel Functions and Upstash Redis. The app is plain HTML, CSS, and JavaScript, with no framework and no build step.
+Easy Notepad stores notes in the browser, so it works without an account or a server. Optional cloud sync lets the same notes follow you between devices with a shared sync key, backed by Vercel Functions and Upstash Redis. The app is plain HTML, CSS, and JavaScript, with no framework and no build step.
 
 > **Security note:** Cloud sync is not end-to-end encrypted. Anyone who has a sync key can read and change the notes stored under it. Don't store passwords or other sensitive information in this app.
 
