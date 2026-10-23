@@ -3,9 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Notepad</title>
-<meta name="theme-color" content="#3b5bdb"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" type="image/png" href="/icon-192.png">
-<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Notepad">
+<title>Free Online Notepad for Notes, Checklists &amp; Drawing | Easy Notepad</title>
+<meta name="theme-color" content="#3b5bdb"><meta name="description" content="Write and organize notes with this free online notepad. Format rich text, make checklists, sketch, work offline, export backups, and optionally sync devices.">
+<link rel="canonical" href="https://easynotepad.vercel.app/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Easy Notepad">
+<meta property="og:title" content="Free Online Notepad | Easy Notepad">
+<meta property="og:description" content="A browser-based notepad for rich-text notes, checklists, sketches, offline access, exports, and optional sync.">
+<meta property="og:url" content="https://easynotepad.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Online Notepad | Easy Notepad">
+<meta name="twitter:description" content="Write notes, make checklists, sketch ideas, and export backups in a browser-based notepad.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Easy Notepad","url":"https://easynotepad.vercel.app/","description":"A browser-based local-first notepad for rich-text notes, checklists, sketches, imports, exports, offline access, and optional cloud sync.","applicationCategory":"ProductivityApplication","operatingSystem":"Any modern web browser","browserRequirements":"JavaScript enabled; offline access requires the app shell to have been cached.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Rich-text editing","Checklists","Freehand drawing and editable shapes","TXT, Markdown, and HTML import","TXT and HTML export","JSON backup and restore","Print and PDF export","Progressive web app installation","Offline app-shell caching","Optional cloud sync between devices"],"creator":{"@type":"Person","@id":"https://easynotepad.vercel.app/#person","name":"Hamza Bhulla","url":"https://hamzabhulla.vercel.app/","sameAs":["https://x.com/hamzabuild","https://www.facebook.com/hamzabhulla.dev","https://www.instagram.com/hamzabhulla_/","https://github.com/hamzabhulla","https://hamzabhulla.vercel.app/"]}}
+</script>
+<link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" type="image/png" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Easy Notepad">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <script>document.documentElement.dataset.theme=localStorage.getItem('np.theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light')</script>
@@ -70,7 +84,7 @@ aside,.bar,#dbar,#find,footer,#menu,.np{display:none!important}html,body{height:
 </head>
 <body>
 <aside id="side">
-  <div class="row"><h1>Notepad</h1><button id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button></div>
+  <div class="row"><h1>Easy Notepad</h1><button id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button></div>
   <button class="p" id="new">+ New note</button>
   <input id="q" type="search" placeholder="Search notes" aria-label="Search notes">
   <ul id="list"></ul>
@@ -109,7 +123,7 @@ aside,.bar,#dbar,#find,footer,#menu,.np{display:none!important}html,body{height:
   <div id="wrap"><div id="sheet"><div id="ed" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true" aria-label="Note"></div><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg></div></div>
   <div id="empty" hidden><p class="mut">No notes yet.</p><button class="p" id="new2">Create your first note</button></div>
   <footer><span id="st" class="mut" role="status"></span><span class="mut" id="wc"></span>
-    <span class="row np" style="gap:0"><button id="zo" title="Zoom out (Ctrl -)">−</button><button id="zv" title="Reset zoom (Ctrl 0)" style="min-width:52px">100%</button><button id="zi" title="Zoom in (Ctrl +)">+</button></span></footer>
+    <span class="row np" style="gap:0"><button id="zo" title="Zoom out (Ctrl -)">−</button><button id="zv" title="Reset zoom (Ctrl 0)" style="min-width:52px">100%</button><button id="zi" title="Zoom in (Ctrl +)">+</button></span><nav aria-label="About Easy Notepad" class="mut" style="font-size:12px;display:flex;gap:10px;flex-wrap:wrap"><a href="/features.html">Features</a><a href="/faq.html">FAQ</a><a href="https://github.com/hamzabhulla/web-notepad">Source code</a></nav></footer>
 </main>
 <dialog id="dlg">
   <h3 style="margin-top:0">Cloud sync</h3>
